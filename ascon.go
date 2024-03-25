@@ -122,6 +122,11 @@ func (a *ascon) Seal(dst, nonce, plaintext, additionalData []byte) []byte {
         s.additionalData128(additionalData)
     }
 
+    ret, out := subtle.SliceForAppend(dst, len(plaintext)+TagSize)
+    if subtle.InexactOverlap(out, plaintext) {
+        panic("cryptobin/ascon: invalid buffer overlap")
+    }
+
     if a.iv == iv128a {
         s.encrypt128a(out[:len(plaintext)], plaintext)
     } else {
@@ -161,6 +166,11 @@ func (a *ascon) Open(dst, nonce, ciphertext, additionalData []byte) ([]byte, err
         s.additionalData128a(additionalData)
     } else {
         s.additionalData128(additionalData)
+    }
+
+    ret, out := subtle.SliceForAppend(dst, len(ciphertext))
+    if subtle.InexactOverlap(out, ciphertext) {
+        panic("cryptobin/ascon: invalid buffer overlap")
     }
 
     if a.iv == iv128a {
