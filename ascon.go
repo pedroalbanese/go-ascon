@@ -10,7 +10,6 @@ import (
     "errors"
     "runtime"
     "strconv"
-    "crypto/subtle"
     "crypto/cipher"
     "encoding/binary"
 
