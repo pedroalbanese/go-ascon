@@ -62,7 +62,7 @@ var _ cipher.AEAD = (*ascon)(nil)
 // Refer to ASCON's documentation for more information.
 func New128(key []byte) (cipher.AEAD, error) {
     if len(key) != KeySize {
-        return nil, errors.New("cryptobin/ascon: bad key length")
+        return nil, errors.New("ascon: bad key length")
     }
 
     return &ascon{
@@ -88,7 +88,7 @@ func New128(key []byte) (cipher.AEAD, error) {
 // Refer to ASCON's documentation for more information.
 func New128a(key []byte) (cipher.AEAD, error) {
     if len(key) != KeySize {
-        return nil, errors.New("cryptobin/ascon: bad key length")
+        return nil, errors.New("ascon: bad key length")
     }
 
     return &ascon{
@@ -108,7 +108,7 @@ func (a *ascon) Overhead() int {
 
 func (a *ascon) Seal(dst, nonce, plaintext, additionalData []byte) []byte {
     if len(nonce) != NonceSize {
-        panic("cryptobin/ascon: incorrect nonce length: " + strconv.Itoa(len(nonce)))
+        panic("ascon: incorrect nonce length: " + strconv.Itoa(len(nonce)))
     }
 
     n0 := binary.BigEndian.Uint64(nonce[0:])
@@ -125,7 +125,7 @@ func (a *ascon) Seal(dst, nonce, plaintext, additionalData []byte) []byte {
 
     ret, out := subtle.SliceForAppend(dst, len(plaintext)+TagSize)
     if subtle.InexactOverlap(out, plaintext) {
-        panic("cryptobin/ascon: invalid buffer overlap")
+        panic("ascon: invalid buffer overlap")
     }
 
     if a.iv == iv128a {
@@ -147,7 +147,7 @@ func (a *ascon) Seal(dst, nonce, plaintext, additionalData []byte) []byte {
 
 func (a *ascon) Open(dst, nonce, ciphertext, additionalData []byte) ([]byte, error) {
     if len(nonce) != NonceSize {
-        panic("cryptobin/ascon: incorrect nonce length: " + strconv.Itoa(len(nonce)))
+        panic("ascon: incorrect nonce length: " + strconv.Itoa(len(nonce)))
     }
 
     if len(ciphertext) < TagSize {
@@ -171,7 +171,7 @@ func (a *ascon) Open(dst, nonce, ciphertext, additionalData []byte) ([]byte, err
 
     ret, out := subtle.SliceForAppend(dst, len(ciphertext))
     if subtle.InexactOverlap(out, ciphertext) {
-        panic("cryptobin/ascon: invalid buffer overlap")
+        panic("ascon: invalid buffer overlap")
     }
 
     if a.iv == iv128a {
